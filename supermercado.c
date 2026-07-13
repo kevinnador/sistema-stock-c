@@ -40,6 +40,7 @@ void liberarMovimientos(NodoMovimiento *lista);
 int leerEnteroSeguro(char mensaje[]);
 float leerFlotanteSeguro(char mensaje[]);
 void leerTextoSeguro(char mensaje [], char destino [], int tam_max);
+void mostrarLista(Producto arr[], int cant);
 
 // --- MAIN ---
 int main() {
@@ -74,6 +75,7 @@ int main() {
             case 0: 
             guardarArchivo(inventario, cant_productos);
             liberarMovimientos(lista_mov);
+            mostrarLista(inventario, cant_productos);
             break; // Persistencia al salir
             default: printf("Opcion invalida.\n");
         }
@@ -81,6 +83,16 @@ int main() {
 
     return 0;
 }
+//--- FUNCIONES GENERALES ---
+
+void mostrarLista (Producto arr[], int cant){
+    for ( int i = 0; i < cant; i++)
+    {
+        printf("\nCodigo: %d | Nombre: %s\n\n", arr[i].codigo, arr[i].nombre);
+    }
+}
+
+
 
 // --- FUNCIONES DE ARCHIVO ---
 void cargarArchivo(Producto arr[], int *cant) {
@@ -107,30 +119,7 @@ int buscarPorCodigo(Producto arr[], int cant, int codigo) {
     return -1;
 }
 
-// --- ALTA DE PRODUCTO ---
-void altaProducto(Producto arr[], int *cant) {
-    if (*cant >= MAX_PROD) {
-        printf("Error: Inventario lleno.\n");
-        return;
-    }
-    
-    int cod = leerEnteroSeguro("Codigo: ");
-    
-    if (buscarPorCodigo(arr, *cant, cod) != -1) {
-        printf("Error: El codigo ya existe.\n");
-        return;
-    }
-    
-    arr[*cant].codigo = cod;
-    while (getchar() != '\n');
-    leerTextoSeguro("Nombre: ",arr[*cant].nombre, 50);
-    leerTextoSeguro("Categoria: ",arr[*cant].categoria, 50);
-    arr[*cant].precio_unitario = leerFlotanteSeguro("Precio Unitario: ");
-    arr[*cant].stock_actual = leerEnteroSeguro("Stock Actual: ");
-    arr[*cant].stock_minimo = leerEnteroSeguro("Stock Minimo: ");
-    (*cant)++;
-    printf("Producto agregado.\n");
-}
+
 
 // --FUNCIONES VALIDACION----
 
@@ -235,8 +224,35 @@ void leerTextoSeguro(char mensaje[], char destino [], int tam_max){
     }
 }
 
+// --- ALTA DE PRODUCTO ---
+void altaProducto(Producto arr[], int *cant) {
+    if (*cant >= MAX_PROD) {
+        printf("Error: Inventario lleno.\n");
+        return;
+    }
+    
+    int cod = leerEnteroSeguro("Codigo: ");
+    
+    if (buscarPorCodigo(arr, *cant, cod) != -1) {
+        printf("Error: El codigo ya existe.\n");
+        return;
+    }
+    
+    arr[*cant].codigo = cod;
+    while (getchar() != '\n');
+    leerTextoSeguro("Nombre: ",arr[*cant].nombre, 50);
+    leerTextoSeguro("Categoria: ",arr[*cant].categoria, 50);
+    arr[*cant].precio_unitario = leerFlotanteSeguro("Precio Unitario: ");
+    arr[*cant].stock_actual = leerEnteroSeguro("Stock Actual: ");
+    arr[*cant].stock_minimo = leerEnteroSeguro("Stock Minimo: ");
+    (*cant)++;
+    printf("Producto agregado.\n");
+}
+
 // --BAJA DE PRODUCTO--
 void bajaProducto(Producto arr[], int *cant) {
+
+    mostrarLista( arr, *cant);
     int cod, pos;
     cod = leerEnteroSeguro("Codigo a dar de baja: ");
     pos = buscarPorCodigo(arr, *cant, cod);
@@ -249,9 +265,13 @@ void bajaProducto(Producto arr[], int *cant) {
         printf("Producto no encontrado.\n");
     }
 }
+
 // -- MODIFICAR PRODUCTO --
 void modificarProducto(Producto arr[], int cant) {
     int cod, pos, op;
+
+    mostrarLista( arr, cant);
+
     cod = leerEnteroSeguro("Codigo a modificar: ");
     pos = buscarPorCodigo(arr, cant, cod);
     
@@ -271,6 +291,8 @@ void modificarProducto(Producto arr[], int cant) {
 // -- CONSULTAR PRODUCTO --
 void consultarProducto(Producto arr[], int cant){
     int op;
+
+    mostrarLista( arr, cant);
     op = leerEnteroSeguro("1. Por Codigo | 2. Por Nombre\nOpcion: ");
     
     if (op == 1) {
@@ -324,6 +346,9 @@ void registrarMovimiento(NodoMovimiento **lista, int codigo, char tipo, int cant
 
 void registrarEntrada(Producto arr[], int cant, NodoMovimiento **lista) {
     int cod, pos, agregados;
+
+    mostrarLista( arr, cant);
+
     cod = leerEnteroSeguro("Codigo del producto: ");
     pos = buscarPorCodigo(arr, cant, cod);
     
@@ -339,6 +364,9 @@ void registrarEntrada(Producto arr[], int cant, NodoMovimiento **lista) {
 
 void registrarVenta(Producto arr[], int cant, NodoMovimiento **lista) {
     int cod, pos, vendidos;
+
+    mostrarLista( arr, cant);
+
     cod = leerEnteroSeguro("Codigo del producto: ");
     pos = buscarPorCodigo(arr, cant, cod);
     

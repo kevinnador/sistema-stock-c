@@ -57,7 +57,7 @@ int main() {
         printf("9. Ultimos Movimientos\n0. Salir\nOpcion: ");
         if (scanf("%d", &opcion) != 1){
             printf("Error: Entrada invalida,Por favor Ingrese un numero: \n");
-            while (getchar() != '\n');    
+            while (getchar() != '\n');  //si no es un entero y lee los   
             opcion = -1;
         }
 
@@ -131,6 +131,110 @@ void altaProducto(Producto arr[], int *cant) {
     (*cant)++;
     printf("Producto agregado.\n");
 }
+
+// --FUNCIONES VALIDACION----
+
+// --
+void liberarMovimientos(NodoMovimiento *lista){
+    NodoMovimiento *actual = lista;
+    NodoMovimiento *siguiente_nodo;
+    while (actual != NULL){
+        siguiente_nodo = actual->siguiente;
+        free(actual);
+        actual = siguiente_nodo;
+    }
+    printf("Memoria dinamica de movimientos liberada correctamente. \n");
+}
+// --
+int leerEnteroSeguro(char mensaje[]){
+    int numero;
+    while(1){
+        printf("%s",mensaje);
+        if (scanf("%d", &numero) == 1){
+            if (numero >= 0){
+                return numero;
+            } else {
+                printf("Error: El numero no puede ser negatico. \n");
+            }
+        } else {
+            printf("Error: Entrada invalida.Debe ingresar un numero entero.\n");
+            while(getchar() != '\n');
+        }
+    }
+}
+// --
+float leerFlotanteSeguro(char mensaje[]){
+    float numero;
+    while(1){
+        printf("%s", mensaje);
+        if(scanf("%f", &numero) ==1 ){
+            if (numero >= 0.0){
+                return numero;
+            }else {
+                printf("Error: El precio no puede ser negativo. \n");
+            }
+        }else{
+            printf("Error: Entrada invalida. Debe ingresar un numero decimal. \n");
+            while (getchar() != '\n');
+        }
+    }
+}
+// --
+void leerTextoSeguro(char mensaje[], char destino [], int tam_max){
+    int es_valido;
+    int tiene_letras;
+    char temp[200];
+    while (1) {
+        printf("%s", mensaje);
+        char formato [20];
+        sprintf(formato, "%%%d[^\n]", tam_max -1);
+        if(scanf(formato, temp) == 1){
+            es_valido = 1;
+            tiene_letras = 0;
+            for(int i = 0; temp[i] != '\0' ; i++){
+                char c = temp[i];
+                if((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (unsigned char)c == 164 || (unsigned char)c == 165){
+                    tiene_letras = 1;
+                }
+                if(!((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == ' ' || c == '\'' || (unsigned char)c == 164 || (unsigned char)c == 165)){
+                    es_valido = 0;
+                    break;
+                }
+            }
+            while (getchar() != '\n');
+            if (es_valido && strlen(temp) > 0 && tiene_letras == 1){
+                int i = 0;
+                int j = 0;
+                while(temp[i]== ' '){
+                    i++;
+                }
+                int ultimo_fue_espacio = 0;
+                while(temp[i] != '\0'){
+                    if(temp[i] != ' '){
+                        destino[j++] = temp[i];
+                        ultimo_fue_espacio = 0;
+                    }else if (!ultimo_fue_espacio){
+                        destino[j++] = ' ';
+                        ultimo_fue_espacio = 1;
+                    }
+                    i++;
+                }
+                if (j > 0 && destino[j - 1] == ' '){
+                    j--;
+                }
+                destino[j] = '\0';
+                if(strlen(destino) > 0){
+                return;
+                }
+            } 
+                printf("Error: entrada invalida, Debe comenzar con letras y no puede ser solo espacios.\n");
+        }else{
+            printf("Error: entrada invalida.\n");
+            while(getchar() != '\n');
+        }
+    }
+}
+
 // --BAJA DE PRODUCTO--
 void bajaProducto(Producto arr[], int *cant) {
     int cod, pos;
@@ -205,7 +309,7 @@ void consultarProducto(Producto arr[], int cant){
             printf("\n[!] No se encontro el producto exacto, pero te mostramos %d sugerencias arriba.\n",encontrados_similares);
         }
     }
-  }
+}
 }
 
 // --- MOVIMIENTOS Y LISTA DINÁMICA ---
@@ -304,105 +408,5 @@ void reporteCompleto(Producto arr[], int cant) {
     printf("\n--- REPORTE COMPLETO (Por Categoria) ---\n");
     for (int i = 0; i < cant; i++) {
         printf("[%s] Cod: %d | %s | Stock: %d\n", temp[i].categoria, temp[i].codigo, temp[i].nombre, temp[i].stock_actual);
-    }
-}
-// --
-void liberarMovimientos(NodoMovimiento *lista){
-    NodoMovimiento *actual = lista;
-    NodoMovimiento *siguiente_nodo;
-    while (actual != NULL){
-        siguiente_nodo = actual->siguiente;
-        free(actual);
-        actual = siguiente_nodo;
-    }
-    printf("Memoria dinamica de movimientos liberada correctamente. \n");
-}
-// --
-int leerEnteroSeguro(char mensaje[]){
-    int numero;
-    while(1){
-        printf("%s",mensaje);
-        if (scanf("%d", &numero) == 1){
-            if (numero >= 0){
-                return numero;
-            } else {
-               printf("Error: El numero no puede ser negatico. \n");
-            }
-        } else {
-            printf("Error: Entrada invalida.Debe ingresar un numero entero.\n");
-            while(getchar() != '\n');
-        }
-    }
-}
-// --
-float leerFlotanteSeguro(char mensaje[]){
-    float numero;
-    while(1){
-        printf("%s", mensaje);
-        if(scanf("%f", &numero) ==1 ){
-            if (numero >= 0.0){
-                return numero;
-            }else {
-                printf("Error: El precio no puede ser negativo. \n");
-            }
-        }else{
-            printf("Error: Entrada invalida. Debe ingresar un numero decimal. \n");
-            while (getchar() != '\n');
-        }
-    }
-}
-// --
-void leerTextoSeguro(char mensaje[], char destino [], int tam_max){
-    int es_valido;
-    int tiene_letras;
-    char temp[200];
-    while (1) {
-        printf("%s", mensaje);
-        char formato [20];
-        sprintf(formato, "%%%d[^\n]", tam_max -1);
-        if(scanf(formato, temp) == 1){
-            es_valido = 1;
-            tiene_letras = 0;
-            for(int i = 0; temp[i] != '\0' ; i++){
-                char c = temp[i];
-                if((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (unsigned char)c == 164 || (unsigned char)c == 165){
-                    tiene_letras = 1;
-                }
-                if(!((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == ' ' || c == '\'' || (unsigned char)c == 164 || (unsigned char)c == 165)){
-                    es_valido = 0;
-                    break;
-                }
-            }
-            while (getchar() != '\n');
-            if (es_valido && strlen(temp) > 0 && tiene_letras == 1){
-                int i = 0;
-                int j = 0;
-                while(temp[i]== ' '){
-                    i++;
-                }
-                int ultimo_fue_espacio = 0;
-                while(temp[i] != '\0'){
-                    if(temp[i] != ' '){
-                        destino[j++] = temp[i];
-                        ultimo_fue_espacio = 0;
-                    }else if (!ultimo_fue_espacio){
-                        destino[j++] = ' ';
-                        ultimo_fue_espacio = 1;
-                    }
-                    i++;
-                }
-                if (j > 0 && destino[j - 1] == ' '){
-                    j--;
-                }
-                destino[j] = '\0';
-                if(strlen(destino) > 0){
-                return;
-                }
-            } 
-                printf("Error: entrada invalida, Debe comenzar con letras y no puede ser solo espacios.\n");
-        }else{
-            printf("Error: entrada invalida.\n");
-            while(getchar() != '\n');
-        }
     }
 }

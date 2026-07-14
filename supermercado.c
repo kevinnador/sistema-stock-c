@@ -320,7 +320,7 @@ void consultarProducto(Producto arr[], int cant){
         for (int i = 0; i < cant; i++){
             if(strstr(arr[i].nombre, nom) != NULL){
                 if(strcmp(arr[i].nombre, nom) != 0){
-                    printf("[%d] %s | CATEGORIA: %s | STOCK: %d | PRECIO: $%.2f\n",arr[1].codigo, arr[i].nombre, arr[i].categoria, arr[i].stock_actual, arr[1].precio_unitario);
+                    printf("[%d] %s | CATEGORIA: %s | STOCK: %d | PRECIO: $%.2f\n",arr[i].codigo, arr[i].nombre, arr[i].categoria, arr[i].stock_actual, arr[i].precio_unitario);
                     encontrados_similares++;
                 }
             }
